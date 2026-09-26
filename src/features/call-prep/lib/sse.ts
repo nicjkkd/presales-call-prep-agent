@@ -1,4 +1,4 @@
-export type SseMessage = { event: string; data: string };
+type SseMessage = { event: string; data: string };
 
 export async function* parseSseStream(
   reader: ReadableStreamDefaultReader<Uint8Array>,

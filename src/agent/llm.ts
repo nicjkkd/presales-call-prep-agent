@@ -6,7 +6,7 @@ import {
   createAnthropicChat,
 } from "@tanstack/ai-anthropic";
 import type { z } from "zod";
-import { getEnv } from "@/lib/env";
+import { type Env, getEnv } from "@/lib/env";
 
 export type LlmErrorKind = "config" | "busy" | "timeout" | "aborted" | "invalid-output" | "unknown";
 
@@ -113,7 +113,7 @@ export async function generateObject<TSchema extends z.ZodType>({
 }
 
 function resolveConfig(): { model: AnthropicChatModel; apiKey: string } {
-  let env: ReturnType<typeof getEnv>;
+  let env: Env;
   try {
     env = getEnv();
   } catch (error) {

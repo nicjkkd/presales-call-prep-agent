@@ -1,6 +1,6 @@
 import type { PrepPlan } from "../schemas/prep-plan";
 
-export type ValidationResult = { ok: true } | { ok: false; issues: string[] };
+type ValidationResult = { ok: true } | { ok: false; issues: string[] };
 
 const QUESTIONS = { min: 5, max: 7 };
 const RISKS = { min: 3, max: 5 };

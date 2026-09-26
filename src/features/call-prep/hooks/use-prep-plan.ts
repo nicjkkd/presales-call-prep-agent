@@ -114,8 +114,6 @@ export function usePrepPlan() {
   return { ...state, run, cancel, reset, showSample };
 }
 
-export type UsePrepPlan = ReturnType<typeof usePrepPlan>;
-
 function handleSseMessage(
   event: string,
   data: string,

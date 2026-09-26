@@ -1,7 +1,6 @@
 import type { Brief } from "../schemas/brief";
-import type { PrepInput } from "../schemas/input";
 
-export type RuleRisk = { title: string; why: string };
+type RuleRisk = { title: string; why: string };
 
 export type RuleFindings = {
   risks: RuleRisk[];
@@ -9,7 +8,7 @@ export type RuleFindings = {
   notes: string[];
 };
 
-type Rule = (brief: Brief, input: PrepInput) => Partial<RuleFindings> | null;
+type Rule = (brief: Brief) => Partial<RuleFindings> | null;
 
 const MAX_MISSING_INFO_QUESTIONS = 2;
 
@@ -120,10 +119,10 @@ const RULES: Rule[] = [
   constraintsToConfirm,
 ];
 
-export function applyRules(brief: Brief, input: PrepInput): RuleFindings {
+export function applyRules(brief: Brief): RuleFindings {
   const findings: RuleFindings = { risks: [], questions: [], notes: [] };
   for (const rule of RULES) {
-    const result = rule(brief, input);
+    const result = rule(brief);
     if (!result) continue;
     findings.risks.push(...(result.risks ?? []));
     findings.questions.push(...(result.questions ?? []));

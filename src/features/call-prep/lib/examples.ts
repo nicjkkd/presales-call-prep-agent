@@ -1,6 +1,6 @@
 import type { PrepInput } from "@/agent/schemas/input";
 
-export type ExampleInput = {
+type ExampleInput = {
   id: string;
   label: string;
   input: PrepInput;

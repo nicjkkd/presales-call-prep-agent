@@ -56,7 +56,7 @@ export async function runAgent(
   const brief = await runStep("analyze", () =>
     analyze(normalized, callOptions(ANALYZE_TIMEOUT_MS)),
   );
-  const findings = await runStep("rules", () => applyRules(brief, normalized));
+  const findings = await runStep("rules", () => applyRules(brief));
 
   let validationFeedback: string[] | undefined;
   for (let attempt = 1; attempt <= MAX_GENERATE_ATTEMPTS; attempt++) {
