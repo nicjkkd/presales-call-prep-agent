@@ -1,9 +1,7 @@
-import { generateObject } from "../llm";
+import { generateObject, type LlmCallOptions } from "../llm";
 import { buildAnalyzePrompt } from "../prompts/analyze";
 import { type Brief, briefSchema } from "../schemas/brief";
 import type { PrepInput } from "../schemas/input";
-
-export type LlmCallOptions = { timeoutMs: number; signal?: AbortSignal };
 
 const ANALYZE_MAX_TOKENS = 4096;
 

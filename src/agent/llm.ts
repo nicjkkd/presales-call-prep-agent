@@ -26,6 +26,8 @@ export class LlmError extends Error {
   }
 }
 
+export type LlmCallOptions = { timeoutMs: number; signal?: AbortSignal };
+
 type GenerateObjectOptions<TSchema extends z.ZodType> = {
   system: string;
   user: string;
