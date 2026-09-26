@@ -44,7 +44,6 @@ export const prepPlanSchema = z.object({
 
 export type PrepPlan = z.infer<typeof prepPlanSchema>;
 
-/** Display titles for the eight sections, in the order the task defines them. */
 export const PREP_PLAN_SECTION_TITLES = {
   opportunitySummary: "Opportunity Summary",
   clientNeeds: "Client Needs Breakdown",

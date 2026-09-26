@@ -1,6 +1,5 @@
 import { type PrepPlan, PREP_PLAN_SECTION_TITLES as T } from "@/agent/schemas/prep-plan";
 
-/** Renders a prep plan as Markdown: one H2 per section, in the task's order. */
 export function prepPlanToMarkdown(plan: PrepPlan): string {
   const sections = [
     [T.opportunitySummary, plan.opportunitySummary],

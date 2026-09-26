@@ -1,8 +1,5 @@
 import type { PrepPlan } from "@/agent/schemas/prep-plan";
 
-// Development fixture: a hand-written plan for the "SaaS founding engineer" example.
-// Used for UI development and the "View sample output" demo mode. Replaced by a real
-// model output in Step 5.
 export const SAMPLE_PREP_PLAN: PrepPlan = {
   opportunitySummary:
     "A non-engineering founder has a fully specified product-led SaaS for automation and operational clarity and needs a senior full-stack partner to turn that specification into a well-architected V1. The work covers architecture, data models, event flows, integrations, and hands-on build, with long-term maintainability valued over shipping speed.",

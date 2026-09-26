@@ -12,10 +12,8 @@ export type PrepPlanResultView = { plan: PrepPlan; brief?: unknown };
 
 type PrepPlanState = {
   status: PrepPlanStatus;
-  /** The step in progress, or the step that failed when `status` is `"error"`. */
   currentStep: AgentStepId | null;
   completedSteps: AgentStepId[];
-  /** Generation attempt for the current step (the agent retries generate + validate once). */
   attempt: number;
   result: PrepPlanResultView | null;
   error: string | null;
@@ -34,11 +32,8 @@ const FAKE_STEP_DELAY_MS = 600;
 
 export function usePrepPlan() {
   const [state, setState] = useState<PrepPlanState>(INITIAL_STATE);
-  // Incremented on every run/cancel/reset so a stale run stops updating state.
   const runIdRef = useRef(0);
 
-  // Placeholder for Step 3: walks the agent steps on timers and resolves with the fixture.
-  // Step 3 replaces this with a POST to /api/prep-plans and reads the SSE progress stream.
   const run = useCallback(async (_input: PrepInput) => {
     const runId = ++runIdRef.current;
     setState({ ...INITIAL_STATE, status: "running" });

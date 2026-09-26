@@ -66,7 +66,6 @@ function getStepState(
   return "pending";
 }
 
-/** Only generate and validate run again when validation fails. */
 function isRetriedStep(id: AgentStepId): boolean {
   return id === "generate" || id === "validate";
 }

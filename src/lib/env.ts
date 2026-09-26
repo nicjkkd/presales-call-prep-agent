@@ -10,10 +10,6 @@ export type Env = z.infer<typeof envSchema>;
 
 let cached: Env | undefined;
 
-/**
- * Parses and validates server env vars on first call, then returns the memoized result.
- * Parsing is deferred so `next build` succeeds without the API key being set.
- */
 export function getEnv(): Env {
   cached ??= envSchema.parse(process.env);
   return cached;

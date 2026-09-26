@@ -1,4 +1,3 @@
-/** Copies text to the clipboard. Resolves to `false` when the browser denies access. */
 export async function copyText(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);

@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-/** Character limits shared by the schema, the form counters, and the API. */
 export const PREP_INPUT_LIMITS = {
   jobPost: { min: 50, max: 15_000 },
   clientMessages: { max: 8_000 },
@@ -25,5 +24,4 @@ export const prepInputSchema = z.object({
   constraints: z.string().trim().max(PREP_INPUT_LIMITS.constraints.max).optional(),
 });
 
-/** Optional fields may be `""`; the agent treats an empty string as "not provided". */
 export type PrepInput = z.infer<typeof prepInputSchema>;
