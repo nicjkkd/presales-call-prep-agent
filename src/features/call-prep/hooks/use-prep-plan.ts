@@ -46,7 +46,10 @@ const MESSAGES = {
 
 const resultEventSchema = z.object({ plan: prepPlanSchema, brief: z.unknown() });
 const errorEventSchema = z.object({ message: z.string(), step: agentStepIdSchema.optional() });
-const errorResponseSchema = z.object({ error: z.string() });
+const errorResponseSchema = z.object({
+  error: z.string(),
+  retryAfterSeconds: z.number().optional(),
+});
 
 type SseOutcome = { done: false } | { done: true; state: Partial<PrepPlanState> };
 
@@ -180,5 +183,9 @@ function parseJson(text: string): unknown {
 
 async function readErrorMessage(response: Response): Promise<string> {
   const parsed = errorResponseSchema.safeParse(await response.json().catch(() => undefined));
-  return parsed.success ? parsed.data.error : `Request failed with status ${response.status}.`;
+  if (!parsed.success) return `Request failed with status ${response.status}.`;
+  const { error, retryAfterSeconds } = parsed.data;
+  if (retryAfterSeconds === undefined) return error;
+  const minutes = Math.max(1, Math.ceil(retryAfterSeconds / 60));
+  return `${error}. Please try again in ${minutes} minute${minutes === 1 ? "" : "s"}.`;
 }
