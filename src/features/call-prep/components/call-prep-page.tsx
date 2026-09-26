@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleXIcon } from "lucide-react";
+import { CircleXIcon, LoaderCircleIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { PrepInput } from "@/agent/schemas/input";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,6 @@ import { usePrepPlan } from "../hooks/use-prep-plan";
 import { PrepForm } from "./prep-form";
 import { PrepResult } from "./prep-result";
 import { ResultActions } from "./result-actions";
-import { StepProgress } from "./step-progress";
 
 export function CallPrepPage() {
   const prep = usePrepPlan();
@@ -52,16 +51,16 @@ export function CallPrepPage() {
           aria-label="Agent progress"
           className="flex flex-col gap-4 rounded-xl p-4 ring-1 ring-foreground/10"
         >
-          <StepProgress
-            status={prep.status}
-            currentStep={prep.currentStep}
-            completedSteps={prep.completedSteps}
-            attempt={prep.attempt}
-          />
           {isRunning && (
-            <Button variant="outline" size="sm" className="self-start" onClick={prep.cancel}>
-              Cancel
-            </Button>
+            <>
+              <p aria-live="polite" className="flex items-center gap-2 text-sm">
+                <LoaderCircleIcon aria-hidden className="size-4 shrink-0 animate-spin" />
+                Analyzing the request and building the prep plan. This usually takes 20–60 seconds.
+              </p>
+              <Button variant="outline" size="sm" className="self-start" onClick={prep.reset}>
+                Cancel
+              </Button>
+            </>
           )}
           {prep.status === "error" && (
             <div role="alert" className="flex flex-col gap-3">
