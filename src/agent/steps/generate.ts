@@ -1,4 +1,4 @@
-import { formatInputSections } from "../format-input";
+import { formatInputSections, tag } from "../format-input";
 import { generateObject } from "../llm";
 import type { Brief } from "../schemas/brief";
 import type { PrepInput } from "../schemas/input";
@@ -43,8 +43,8 @@ export function generate({
   validationFeedback,
 }: GenerateParams): Promise<PrepPlan> {
   const sections = [
-    `<brief>\n${JSON.stringify(brief, null, 2)}\n</brief>`,
-    `<rule_findings>\n${JSON.stringify(findings, null, 2)}\n</rule_findings>`,
+    tag("brief", JSON.stringify(brief, null, 2)),
+    tag("rule_findings", JSON.stringify(findings, null, 2)),
     formatInputSections(input),
     "Write the call prep plan.",
   ];

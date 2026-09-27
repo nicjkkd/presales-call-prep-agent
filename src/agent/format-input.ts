@@ -1,5 +1,9 @@
 import type { PrepInput } from "./schemas/input";
 
+export function tag(name: string, value: string): string {
+  return `<${name}>\n${value}\n</${name}>`;
+}
+
 export function formatInputSections(input: PrepInput): string {
   const sections: [string, string | undefined][] = [
     ["job_post", input.jobPost],
@@ -7,8 +11,5 @@ export function formatInputSections(input: PrepInput): string {
     ["team_expertise", input.teamExpertise],
     ["constraints", input.constraints],
   ];
-  return sections
-    .filter(([, value]) => value)
-    .map(([tag, value]) => `<${tag}>\n${value}\n</${tag}>`)
-    .join("\n\n");
+  return sections.flatMap(([name, value]) => (value ? [tag(name, value)] : [])).join("\n\n");
 }
