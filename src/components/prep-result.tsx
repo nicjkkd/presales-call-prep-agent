@@ -1,15 +1,13 @@
 "use client";
 
 import { ChevronDownIcon } from "lucide-react";
-import { PREP_PLAN_SECTION_TITLES as T } from "@/agent/schemas/prep-plan";
+import type { Brief } from "@/agent/schemas/brief";
+import { type PrepPlan, PREP_PLAN_SECTION_TITLES as T } from "@/agent/schemas/prep-plan";
+import { ResultSection } from "@/components/result-section";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import type { PrepPlanResultView } from "../hooks/use-prep-plan";
-import { ResultSection } from "./result-section";
 
-export function PrepResult({ result }: { result: PrepPlanResultView }) {
-  const { plan, brief } = result;
-
+export function PrepResult({ plan, brief }: { plan: PrepPlan; brief?: Brief }) {
   return (
     <div className="flex flex-col gap-4">
       <ResultSection index={1} title={T.opportunitySummary}>
@@ -83,7 +81,7 @@ export function PrepResult({ result }: { result: PrepPlanResultView }) {
         <p>{plan.finalPrepNote}</p>
       </ResultSection>
 
-      {brief !== undefined && (
+      {brief && (
         <Collapsible className="rounded-xl ring-1 ring-foreground/10">
           <CollapsibleTrigger className="group flex w-full items-center justify-between px-4 py-3 font-medium text-sm">
             Intermediate brief (step 1 output)

@@ -1,56 +1,39 @@
 import type { PrepPlan } from "../schemas/prep-plan";
 
-type ValidationResult = { ok: true } | { ok: false; issues: string[] };
-
-const QUESTIONS = { min: 5, max: 7 };
-const RISKS = { min: 3, max: 5 };
-const MIN_HIDDEN_NEEDS = 1;
-const MIN_FOCUS_POINTS = 2;
-
-export function validatePrepPlan(plan: PrepPlan): ValidationResult {
-  const issues = [
-    ...checkCount("discoveryQuestions", plan.discoveryQuestions.length, QUESTIONS),
-    ...checkCount("risks", plan.risks.length, RISKS),
-    ...checkCount("clientNeeds.hiddenNeeds", plan.clientNeeds.hiddenNeeds.length, {
-      min: MIN_HIDDEN_NEEDS,
-    }),
-    ...checkCount("callStrategy.focus", plan.callStrategy.focus.length, { min: MIN_FOCUS_POINTS }),
-    ...findEmptyStrings(plan).map((path) => `${path} is empty; write meaningful content.`),
-    ...findDuplicateQuestions(plan.discoveryQuestions),
-  ];
-  return issues.length === 0 ? { ok: true } : { ok: false, issues };
-}
-
-function checkCount(field: string, count: number, range: { min: number; max?: number }): string[] {
-  if (count < range.min || (range.max !== undefined && count > range.max)) {
-    const expected =
-      range.max === undefined ? `at least ${range.min}` : `${range.min} to ${range.max}`;
-    return [`${field} has ${count} items; it must have ${expected}.`];
-  }
-  return [];
-}
-
-function findEmptyStrings(value: unknown, path = ""): string[] {
-  if (typeof value === "string") return value.trim() === "" ? [path] : [];
-  if (Array.isArray(value)) {
-    return value.flatMap((item, index) => findEmptyStrings(item, `${path}[${index}]`));
-  }
-  if (typeof value === "object" && value !== null) {
-    return Object.entries(value).flatMap(([key, item]) =>
-      findEmptyStrings(item, path ? `${path}.${key}` : key),
-    );
-  }
-  return [];
-}
-
-function findDuplicateQuestions(questions: string[]): string[] {
-  const seen = new Set<string>();
+export function validatePrepPlan(plan: PrepPlan): string[] {
   const issues: string[] = [];
-  for (const question of questions) {
-    const key = question.trim().toLowerCase();
-    if (seen.has(key))
-      issues.push(`discoveryQuestions contains a duplicate: "${question.trim()}".`);
-    seen.add(key);
+  const questions = plan.discoveryQuestions.length;
+  const risks = plan.risks.length;
+
+  if (questions < 5 || questions > 7) {
+    issues.push(`discoveryQuestions has ${questions} items; it must have 5 to 7.`);
   }
+  if (risks < 3 || risks > 5) {
+    issues.push(`risks has ${risks} items; it must have 3 to 5.`);
+  }
+  if (plan.clientNeeds.hiddenNeeds.length < 1) {
+    issues.push("clientNeeds.hiddenNeeds is empty; list at least 1 hidden need.");
+  }
+  if (plan.callStrategy.focus.length < 2) {
+    issues.push("callStrategy.focus has fewer than 2 items; list at least 2.");
+  }
+
+  const normalized = plan.discoveryQuestions.map((question) => question.trim().toLowerCase());
+  if (new Set(normalized).size !== normalized.length) {
+    issues.push("discoveryQuestions contains duplicates; every question must be different.");
+  }
+
+  for (const path of emptyStringPaths(plan)) {
+    issues.push(`${path} is empty; write meaningful content.`);
+  }
+
   return issues;
+}
+
+function emptyStringPaths(value: unknown, path = ""): string[] {
+  if (typeof value === "string") return value.trim() ? [] : [path];
+  if (typeof value !== "object" || value === null) return [];
+  return Object.entries(value).flatMap(([key, child]) =>
+    emptyStringPaths(child, path ? `${path}.${key}` : key),
+  );
 }

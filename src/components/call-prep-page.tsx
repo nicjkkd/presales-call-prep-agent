@@ -3,11 +3,11 @@
 import { CircleXIcon, LoaderCircleIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { PrepInput } from "@/agent/schemas/input";
+import { PrepForm } from "@/components/prep-form";
+import { PrepResult } from "@/components/prep-result";
+import { ResultActions } from "@/components/result-actions";
 import { Button } from "@/components/ui/button";
-import { usePrepPlan } from "../hooks/use-prep-plan";
-import { PrepForm } from "./prep-form";
-import { PrepResult } from "./prep-result";
-import { ResultActions } from "./result-actions";
+import { usePrepPlan } from "@/hooks/use-prep-plan";
 
 export function CallPrepPage() {
   const prep = usePrepPlan();
@@ -63,13 +63,13 @@ export function CallPrepPage() {
             </>
           )}
           {prep.status === "error" && (
-            <div role="alert" className="flex flex-col gap-3">
+            <div role="alert" className="flex flex-wrap items-center justify-between gap-3">
               <p className="flex items-center gap-2 text-destructive text-sm">
                 <CircleXIcon aria-hidden className="size-4 shrink-0" />
                 {prep.error ?? "Something went wrong."}
               </p>
               {lastInput && (
-                <Button size="sm" className="self-start" onClick={() => prep.run(lastInput)}>
+                <Button className="shrink-0" onClick={() => prep.run(lastInput)}>
                   Try again
                 </Button>
               )}
@@ -84,7 +84,7 @@ export function CallPrepPage() {
             <h2 className="font-semibold text-xl">Call Prep Plan</h2>
             <ResultActions plan={prep.result.plan} onNewAnalysis={prep.reset} />
           </div>
-          <PrepResult result={prep.result} />
+          <PrepResult plan={prep.result.plan} brief={prep.result.brief} />
         </section>
       )}
     </main>

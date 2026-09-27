@@ -4,8 +4,7 @@ import { CheckIcon, CopyIcon, RotateCcwIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { PrepPlan } from "@/agent/schemas/prep-plan";
 import { Button } from "@/components/ui/button";
-import { copyText } from "../lib/clipboard";
-import { prepPlanToMarkdown } from "../lib/markdown";
+import { prepPlanToMarkdown } from "@/lib/markdown";
 
 type CopyTarget = "markdown" | "json";
 
@@ -27,7 +26,10 @@ export function ResultActions({ plan, onNewAnalysis }: ResultActionsProps) {
 
   async function copy(target: CopyTarget) {
     const text = target === "markdown" ? prepPlanToMarkdown(plan) : JSON.stringify(plan, null, 2);
-    if (await copyText(text)) setCopied(target);
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(target);
+    } catch {}
   }
 
   return (

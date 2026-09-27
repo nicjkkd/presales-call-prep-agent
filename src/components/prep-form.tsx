@@ -1,13 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { cn } from "cn";
+import { FileTextIcon, SparklesIcon } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { PREP_INPUT_LIMITS, type PrepInput, prepInputSchema } from "@/agent/schemas/input";
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { ExampleButtons } from "./example-buttons";
+import { EXAMPLE_INPUTS } from "@/lib/examples";
 
 const EMPTY_INPUT: PrepInput = {
   jobPost: "",
@@ -77,11 +78,26 @@ export function PrepForm({ isRunning, onSubmit, onClear, onShowSample }: PrepFor
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="flex flex-col gap-6">
-      <ExampleButtons
-        disabled={isRunning}
-        onLoad={(input) => form.reset(input)}
-        onShowSample={onShowSample}
-      />
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-muted-foreground text-sm">Load example:</span>
+        {EXAMPLE_INPUTS.map((example) => (
+          <Button
+            key={example.id}
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={isRunning}
+            onClick={() => form.reset(example.input)}
+          >
+            <FileTextIcon aria-hidden />
+            {example.label}
+          </Button>
+        ))}
+        <Button type="button" variant="link" size="sm" disabled={isRunning} onClick={onShowSample}>
+          <SparklesIcon aria-hidden />
+          View sample output (no API call)
+        </Button>
+      </div>
 
       <FieldGroup>
         {FIELDS.map((config) => (

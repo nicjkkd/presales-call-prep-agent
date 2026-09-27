@@ -2,18 +2,17 @@
 
 import axios from "axios";
 import { useRef, useState } from "react";
-import type { PrepPlanResult } from "@/agent";
+import type { Brief } from "@/agent/schemas/brief";
 import type { PrepInput } from "@/agent/schemas/input";
 import type { PrepPlan } from "@/agent/schemas/prep-plan";
-import { SAMPLE_PREP_PLAN } from "../lib/fixtures/sample-prep-plan";
+import { SAMPLE_PREP_PLAN } from "@/lib/sample-prep-plan";
 
-export type PrepPlanStatus = "idle" | "running" | "success" | "error";
-
-export type PrepPlanResultView = { plan: PrepPlan; brief?: unknown };
+type Status = "idle" | "running" | "success" | "error";
+type Result = { plan: PrepPlan; brief?: Brief };
 
 export function usePrepPlan() {
-  const [status, setStatus] = useState<PrepPlanStatus>("idle");
-  const [result, setResult] = useState<PrepPlanResultView | null>(null);
+  const [status, setStatus] = useState<Status>("idle");
+  const [result, setResult] = useState<Result | null>(null);
   const [error, setError] = useState<string | null>(null);
   const controllerRef = useRef<AbortController | null>(null);
 
@@ -27,7 +26,7 @@ export function usePrepPlan() {
     setError(null);
 
     try {
-      const { data } = await axios.post<PrepPlanResult>("/api/prep-plans", input, {
+      const { data } = await axios.post<Result>("/api/prep-plans", input, {
         signal: controller.signal,
       });
       setResult(data);

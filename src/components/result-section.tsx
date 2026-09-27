@@ -13,9 +13,9 @@ export function ResultSection({ index, title, action, children }: ResultSectionP
     <Card>
       <CardHeader>
         <CardTitle>
-          <h2 className="font-semibold text-base">
+          <h3 className="font-semibold text-base">
             <span className="text-muted-foreground">{index}.</span> {title}
-          </h2>
+          </h3>
         </CardTitle>
         {action && <CardAction>{action}</CardAction>}
       </CardHeader>
