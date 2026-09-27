@@ -223,6 +223,8 @@ The app is deployed on Vercel. Import the repository, add `ANTHROPIC_API_KEY` un
 
 The route exports `maxDuration = 120`; check that your Vercel plan allows a 120-second function duration.
 
+Page views are counted with Vercel Web Analytics through the `<Analytics />` component in `src/app/layout.tsx`. It needs no configuration and is available on the Hobby plan.
+
 There is no rate limiting. The deployment uses the owner's API key, so set a monthly spend limit in the Anthropic console before sharing the link.
 
 ## Examples

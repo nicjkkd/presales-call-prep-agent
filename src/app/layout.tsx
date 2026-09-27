@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import { cn } from "cn";
 import { Geist } from "next/font/google";
 
@@ -14,7 +15,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={cn("font-sans", geist.variable)}>
-      <body className="min-h-screen bg-background text-foreground antialiased">{children}</body>
+      <body className="min-h-screen bg-background text-foreground antialiased">
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
