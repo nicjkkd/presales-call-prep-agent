@@ -1,5 +1,7 @@
+import { AccessGate } from "@/components/access-gate";
 import { CallPrepPage } from "@/components/call-prep-page";
+import { hasAccess } from "@/lib/access";
 
-export default function Home() {
-  return <CallPrepPage />;
+export default async function Home() {
+  return (await hasAccess()) ? <CallPrepPage /> : <AccessGate />;
 }
