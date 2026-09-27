@@ -57,7 +57,7 @@ export function CallPrepPage() {
                 <LoaderCircleIcon aria-hidden className="size-4 shrink-0 animate-spin" />
                 Analyzing the request and building the prep plan. This usually takes 20–60 seconds.
               </p>
-              <Button variant="outline" size="sm" className="self-start" onClick={prep.reset}>
+              <Button variant="outline" size="sm" className="self-start" onClick={prep.cancel}>
                 Cancel
               </Button>
             </>

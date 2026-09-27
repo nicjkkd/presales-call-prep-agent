@@ -31,6 +31,7 @@ type GenerateParams = {
   input: PrepInput;
   brief: Brief;
   findings: RuleFindings;
+  signal: AbortSignal;
   validationFeedback?: string[];
 };
 
@@ -38,6 +39,7 @@ export function generate({
   input,
   brief,
   findings,
+  signal,
   validationFeedback,
 }: GenerateParams): Promise<PrepPlan> {
   const sections = [
@@ -51,5 +53,10 @@ export function generate({
       `The previous attempt failed validation:\n${validationFeedback.map((issue) => `- ${issue}`).join("\n")}\nFix exactly these issues.`,
     );
   }
-  return generateObject({ system: SYSTEM, user: sections.join("\n\n"), schema: prepPlanSchema });
+  return generateObject({
+    system: SYSTEM,
+    user: sections.join("\n\n"),
+    schema: prepPlanSchema,
+    signal,
+  });
 }

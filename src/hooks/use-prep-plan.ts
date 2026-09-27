@@ -17,40 +17,42 @@ export function usePrepPlan() {
   const controllerRef = useRef<AbortController | null>(null);
 
   async function run(input: PrepInput) {
-    controllerRef.current?.abort();
-    const controller = new AbortController();
-    controllerRef.current = controller;
-
+    controllerRef.current = new AbortController();
     setStatus("running");
     setResult(null);
     setError(null);
 
     try {
       const { data } = await axios.post<Result>("/api/prep-plans", input, {
-        signal: controller.signal,
+        signal: controllerRef.current.signal,
       });
       setResult(data);
       setStatus("success");
     } catch (err) {
-      if (axios.isCancel(err)) return;
+      if (axios.isCancel(err)) {
+        setStatus("idle");
+        return;
+      }
       setError("Something went wrong while generating the plan. Please try again.");
       setStatus("error");
     }
   }
 
-  function reset() {
+  function cancel() {
     controllerRef.current?.abort();
+  }
+
+  function reset() {
     setStatus("idle");
     setResult(null);
     setError(null);
   }
 
   function showSample() {
-    controllerRef.current?.abort();
     setResult({ plan: SAMPLE_PREP_PLAN });
     setError(null);
     setStatus("success");
   }
 
-  return { status, result, error, run, reset, showSample };
+  return { status, result, error, run, cancel, reset, showSample };
 }

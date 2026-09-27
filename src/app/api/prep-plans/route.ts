@@ -10,6 +10,6 @@ export async function POST(request: Request) {
     return Response.json({ error: "Invalid input", issues: parsed.error.issues }, { status: 400 });
   }
 
-  const result = await runAgent(parsed.data);
+  const result = await runAgent(parsed.data, request.signal);
   return Response.json(result);
 }

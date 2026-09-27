@@ -42,6 +42,7 @@ Buttons:
 
 - **Load example** fills the form with one of the two sample job posts from `examples/`.
 - **View sample output (no API call)** shows a stored plan for the SaaS example without calling the model.
+- **Cancel** stops a run. The form keeps its values, so you can fix the input and generate again.
 - **Copy as Markdown** and **Copy JSON** put the plan on the clipboard. **New analysis** clears the result.
 
 The optional inputs change the plan. With team expertise the positioning connects the team's past work to the client's needs; without it the plan speaks about "the team" and invents nothing. Constraints feed the solution approach and the call strategy. The text-to-video example uses both and is the reference for this.
@@ -122,6 +123,8 @@ flowchart LR
 
 **4. validate (code).** Input: the `PrepPlan`. Output: a list of issues, empty when the plan passes. It checks 5 to 7 questions, 3 to 5 risks, at least one hidden need, at least two focus points, no duplicate questions, and no empty strings anywhere in the plan. No model call.
 
+**Cancellation.** Cancel aborts the browser request. On the server, the route passes `request.signal` into `runAgent`, which forwards it to every model call, so the in-flight Anthropic request is aborted and no further step starts. The handler then throws after the client is gone, which Next.js logs as an error; nothing is returned to anyone.
+
 **Retry.** If validation returns issues, the agent calls generate once more with the issues prepended to the prompt ("The previous attempt failed validation: … Fix exactly these issues."). If the second plan fails too, the agent throws and the API returns 500. There is no third attempt.
 
 This is a workflow with code gates between two LLM calls, not an autonomous agent that plans its own steps. The output is fixed and well defined (eight sections, known limits), so a fixed sequence with deterministic checks is more predictable, cheaper and easier to explain than a loop of tool calls.
@@ -149,7 +152,7 @@ examples/                   sample inputs and outputs
 Dependency rule: `src/agent` knows nothing about Next.js or React. The route handler only validates, calls `runAgent`, and returns the result. The UI imports only the zod schemas and their types from the agent, so the form and the API validate input with the same schema.
 
 ```ts
-runAgent(input: PrepInput): Promise<{ plan: PrepPlan; brief: Brief }>
+runAgent(input: PrepInput, signal: AbortSignal): Promise<{ plan: PrepPlan; brief: Brief }>
 ```
 
 ## API
@@ -173,7 +176,7 @@ Responses:
 | 400 | `{ "error": "Invalid input", "issues": [ ...zod issues ] }` |
 | 500 | Next.js default error response when the model call fails or the plan fails validation twice. Details are logged on the server only. |
 
-The route sets `maxDuration = 120` seconds. A run makes two model calls, three when the retry fires, and usually takes 20 to 60 seconds.
+The route sets `maxDuration = 120` seconds. If the client disconnects, `request.signal` aborts the in-flight model call and the run stops. A run makes two model calls, three when the retry fires, and usually takes 20 to 60 seconds.
 
 Example (this makes a real model call and costs money):
 
