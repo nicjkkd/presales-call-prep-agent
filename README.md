@@ -2,8 +2,7 @@
 
 Turns a job post or project description into a structured prep plan for a presales discovery call.
 
-- **Live demo:** TODO: Vercel URL
-- **Demo video:** TODO: video URL
+- **Live demo:** [Vercel URL](https://presales-call-prep-agent.vercel.app/)
 - **Examples:** [`examples/`](examples/)
 
 ## What it does
