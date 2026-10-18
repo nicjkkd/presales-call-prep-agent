@@ -70,6 +70,7 @@ src/
   components/     page, form, access gate and result components; ui/ holds shadcn primitives
   hooks/          use-prep-plan.ts
   lib/            access check, examples, sample plan, Markdown export
+  proxy.ts        logs IP and geo per page visit
 examples/         sample inputs and outputs
 ```
 
@@ -102,7 +103,7 @@ Orchestration is hand-written: four functions called in order, no agent framewor
 
 ## Deployment
 
-Deployed on Vercel. Add `ANTHROPIC_API_KEY` and `ACCESS_KEY` in the project's environment variables. Page views are counted with Vercel Web Analytics. The access key is the only protection against unknown users; there is no rate limiting, so also set a spend limit on the API key.
+Deployed on Vercel. Add `ANTHROPIC_API_KEY` and `ACCESS_KEY` in the project's environment variables. Page views are counted with Vercel Web Analytics. Each page visit also writes one `visit` JSON line to Vercel Runtime Logs from `src/proxy.ts`: IP, country, region, city, postal code, coordinates and timezone from Vercel's geo headers, plus path, `?src=` tag, user agent and referer. API calls and static files are not logged. Search the project's Logs for `visit`; the Hobby plan keeps them for 1 hour. The access key is the only protection against unknown users; there is no rate limiting, so also set a spend limit on the API key.
 
 ## Examples
 
@@ -116,3 +117,4 @@ TODO: run both examples and add `output.md` and `output.json`.
 - One spinner for the whole run, no per-step progress.
 - Output quality depends on the model; rules guarantee presence, not sharpness.
 - No automated tests.
+- IP location is an estimate: country is reliable, city often is, coordinates point at the city or provider, not the visitor. VPNs and mobile networks shift it.
